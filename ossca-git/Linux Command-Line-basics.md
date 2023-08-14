@@ -1,5 +1,12 @@
 # Linux Command-Line-basics
 
+유튜브 강의
+<br/>
+[OSSCA Git 강의 주소](https://www.youtube.com/playlist?list=PL8MaVgZDhGk-z7cezrPFJ5y6v3GW_S1iF) <br/>
+
+참고한 자료 <br/>
+[The Linux Command Line](https://wiki.lib.sun.ac.za/images/c/ca/TLCL-13.07.pdf)
+
 # Navigation
 Linux의 파일구조는 계층적 디렉토리구조이다. <br/>
 이를 tree구조라고 부른다. <br/>
