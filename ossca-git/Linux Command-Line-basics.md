@@ -144,3 +144,115 @@ ossca-git/ is a directory
 - n : 다음 검색어로 이동한다.
 - h : 도움말을 볼 수 있다.
 - q : less를 종료한다.
+
+## Manipulating Files And Directories
+
+아래 5가지 명령어는 상당히 자주 사용이 된다. <br/>
+
+**GUI의 장점**
+- drag and drop을 통해 간단하게 파일 및 디렉토리를 조작할 수 있다.
+- 시각적으로 잘 보인다.
+  
+**CLI의 장점**
+- 빠르고 유연하다.
+- 복잡한 작업을 간편하게 처리할 수 있다.
+
+<br/>
+
+**파일,디렉토리 조작 명령어**
+- cp : Copy file and directories
+- mv : Move/Rename file and directories
+- mkdir : Create directoies
+- rm : Remove files and directories
+- ln : Create hard and symbolic links
+
+<br/>
+
+```bash
+cp -u *.html destination
+
+하나의 디렉토리에 있는 모든 HTML파일을 다른 파일로 복사하는 명령어.
+목적한 디렉토리에 없거나, 그것보다 최신 버전의 파일만 복사한다.
+
+이런경우에는 GUI 보다 CLI 환경에서의 조작이 훨씬 빠르고 간편하다.
+```
+<br/>
+
+**와일드카드**
+
+파일 이름으로 빠르게 그룹을 짓게 도와주는 쉘에서 제공하는 특별한 문자이다. <br/>
+
+| 와일드카드 | 의미 |
+|--|--|
+| * | 일치하는 모든 문자 |
+| ? | 일치하는 문자 하나 |
+| [ characters ] | 대괄호 안에 있는 문자의 그룹과 일치하는 모든 문자 |
+| [ ! characters ] | 대괄호 안에 있는 문자의 그룹과 일치하지 않는 모든 문자 |
+| [[:class:]] | 지정한 문자 클래스에 속하는 모든 문자 |
+
+<br/>
+
+**[:class:]에 들어갈 내용**
+| 문자 클래스 | 의미 |
+|--|--|
+|[:alnum:] | 일치하는 모든 알파벳 문자와 숫자 |
+|[:alpha:] | 일치하는 모든 알파벳 문자 |
+|[:digit:] | 일치하는 모든 숫자 |
+|[:lower:] | 일치하는 모든 소문자 |
+|[:upper:] | 일치하는 모든 대문자 |
+
+<br/>
+
+**wildcard를 사용한 예시**
+
+| 패턴|일치하는 내용 |
+|--|--|
+| * | 모든 파일 |
+| g* | g로 시작하는 모든 파일 |
+| b*.txt | b로 시작하고 .txt로 끝나는 모든 파일 |
+| Data??? | Data로 시작하고 3개의 문자가 있는 모든 파일 |
+| [abc]* | "a", "b", 또는 "c"로 시작하는 모든 파일 |
+| BACKUP.[0-9][0-9][0-9] | BACKUP으로 시작하고 3개의 숫자로 끝나는 모든 파일 |
+| [[:upper:]]* | 대문자로 시작하는 모든 파일 |
+| [![:digit:]]* | 숫자로 시작하지않는 모든 파일 |
+| *[[:lower:]123] | 소문자로 시작하거나 1,2 또는 3이 들어간 모든 파일 |
+
+<br/>
+
+## mkdir
+**mkdir: Make Directories**의 약어로 디렉토리를 생성할 때 사용한다. <br/><br/>
+
+```bash
+$ mkdir directory_name
+
+한번에 여러개의 디렉토리를 생성할 수 있다.
+$ mkdir dir1 dir2 dir3
+```
+<br/>
+
+## cp
+**cp: copy**의 약어로 파일이나 디렉토리를 복사할 때 사용한다.<br/><br/>
+
+```bash
+$ cp [옵션][복사할 디렉토리 및 파일][복사될 디렉토리 및 파일]
+
+현재 디렉토리에 있는 test.txt 파일을 new_test.txt라는 이름으로 현 위치에 복사
+$ cp test.txt new_test.txt
+
+/user/zinu 경로의 test.txt 파일을 new_test.txt라는 이름으로 현재 위치에 복사
+$ cp /user/zinu/test.txt new_test.txt
+
+/user/zinu 경로의 test.txt 파일을 new_test.txt라는 이름으로 /user/test_dir에 복사
+$ cp /user/zinu/test.txt /user/test_dir/new_test.txt
+
+```
+<br/>
+
+**cp 옵션**
+- -i : 복사될 파일이 이름이 이미 존재할 경우, 사용자에게 덮어 쓰기 여부를 묻습니다.
+- -b : 복사될 파일이 이름이 이미 존재할 경우, 백업파일을 생성합니다.
+- -f : 복사 될 파일이 이름이 이미 존재 할 경우, 강제로 덮어쓰기 합니다.
+- -r : 하위 디렉토리 까지 모두 복사합니다.
+- -a : 원본 파일의 속성, 링크 정보까지 모두 복사합니다.
+- -p : 원본 파일의 소유자, 그룹, 권한 등의 정보까지 모두 복사합니다.
+- -v : 복사 진행 상태를 출력합니다.
