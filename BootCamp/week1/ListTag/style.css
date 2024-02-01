@@ -1,0 +1,10 @@
+body {
+  margin: 24px 16px;
+}
+
+.food {
+  width: 256px;
+  border-radius: 8px;
+  margin: 8px;
+  float: right;
+}

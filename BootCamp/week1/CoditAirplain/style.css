@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f8f8f8;
+}
+
+.container {
+  width: 640px;
+  margin: 0 auto 20px;
+}
+
+.nav {
+  background: #11172b;
+  text-align: left;
+}
+.cover {
+  height: 24px;
+}
+.navTxtAcc {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+}
+.navTxt {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.navTxtAcc,
+.navTxt {
+  display: inline-block;
+  padding: 12px 0px;
+}
+
+.bticket {
+  margin-top: 40px;
+  width: 100%;
+  background-color: #ebeff8;
+}
+.bsection {
+  padding: 24px 32px;
+}
+.depart {
+  color: #b3bdd5;
+  font-size: 16px;
+  > img {
+    height: 12px;
+    padding-right: 8px;
+  }
+}
+
+.bsection > h1 {
+  font-size: 32px;
+  color: #000000;
+  margin-top: 8px;
+}
+
+.bday {
+  display: inline-block;
+  margin: 24px 0 16px;
+  padding: 8px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.bdec {
+  font-size: 12px;
+  color: #b3bdd5;
+}
+
+.br {
+  border: 1px dashed #b6bfd3;
+  margin: 20px 0;
+}
+
+.ticket {
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.ticketNum {
+  padding: 8px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #16bf97;
+}
+
+.tbr {
+  border-bottom: 1px solid #dbf1ec;
+}
+
+.ticketDec {
+  padding: 26px 24px 24px;
+}
+
+.startPlain{
+  font-size: 12px;
+  font-weight: 500;
+  color: #b3bdd5;
+  padding-bottom: 4px;
+}
+
+.airTime{
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a345e;
+  padding-bottom: 4px;
+  > img {
+    width: 18px;
+    margin: 0 8px;
+  }
+}
+
+.sitNum{
+  font-size: 16px;
+  color: #0b1f66;
+  margin-bottom: 4px;
+}
+
+.menu{
+  text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a345e;
+  > :nth-child(2){
+    margin: 0 24px;
+  }
+}
+
+.menu > #soldOut{
+  font-size: 14px;
+  font-weight: 500;
+  color: #dce0e8;
+}

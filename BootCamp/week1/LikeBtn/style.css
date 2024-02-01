@@ -1,0 +1,19 @@
+.like {
+  background-color: #e7c8c8;
+  border-radius: 16px;
+  border: none;
+  color: #3f3636;
+  font-size: 24px;
+  padding: 8px 16px;
+  transition:
+    color 0.2s ease,
+    margin-top 0.1s ease;
+}
+
+.like:active {
+  margin-top: 2px;
+}
+
+.liked {
+  color: #e13b57;
+}

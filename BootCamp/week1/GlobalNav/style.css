@@ -1,0 +1,25 @@
+.gnb {
+  border-bottom: 1px solid #dddddd;
+}
+
+#logo {
+  height: 20px;
+}
+
+ul.menu {
+  display: inline-block;
+  /* 여기에 코드를 작성하세요 */
+  list-style: none;
+  margin: 0;
+}
+
+ul.menu > li {
+  display: inline-block;
+  margin: 16px;
+  /* 여기에 코드를 작성하세요 */
+}
+
+.gnb,
+.main {
+  padding: 16px;
+}

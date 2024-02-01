@@ -1,0 +1,56 @@
+body,
+html {
+  background-color: #f5f6f2;
+}
+
+.painting {
+  background-color: black;
+  display: grid;
+  grid-template: repeat(6, 1fr) / repeat(4, 1fr);
+  width: 460px;
+  height: 540px;
+  gap: 16px;
+
+  grid-template-areas: 
+  "w r r r"
+  "w r r r"
+  "lw r r r"
+  "lw r r r"
+  "b uw uw rw"
+  "b uw uw yw";
+}
+
+#box1 {
+  background-color: white;
+  grid-area: w;
+}
+
+#box2 {
+  background-color: white;
+  grid-area: lw;
+}
+
+#box3 {
+  background-color: blue;
+  grid-area: b;
+}
+
+#box4 {
+  background-color: red;
+  grid-area: r;
+}
+  
+#box5 {
+  background-color: white;
+  grid-area: uw;
+}
+
+#box6 {
+  background-color: white;
+  grid-area: rw;
+}
+
+#box7 {
+  background-color: yellow;
+  grid-area: yw;
+}
