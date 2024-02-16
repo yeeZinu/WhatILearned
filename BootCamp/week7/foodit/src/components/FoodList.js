@@ -1,18 +1,23 @@
 import './FoodList.css';
 
+function formatDate(value) {
+  const date = new Date(value);
+  return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
+}
+
 function FoodListItem({ item, onDelete }) {
-  const { imgUrl, title, calorie, content } = item;
-  const handleDelete = () => {
-    onDelete(item.id);
-  };
+  const { imgUrl, title, calorie, content, createdAt } = item;
+
+  const handleDeleteClick = () => onDelete(item.id);
 
   return (
     <div className="FoodListItem">
       <img src={imgUrl} alt={title} />
       <div>{title}</div>
-      <div>{calorie}cal</div>
+      <div>{calorie}</div>
       <div>{content}</div>
-      <button onClick={handleDelete}>삭제</button>
+      <div>{formatDate(createdAt)}</div>
+      <button onClick={handleDeleteClick}>삭제</button>
     </div>
   );
 }

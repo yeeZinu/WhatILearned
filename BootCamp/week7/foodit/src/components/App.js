@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getFoods } from '../api';
 import FoodList from './FoodList';
+import FoodForm from './FoodForm';
 
 function App() {
   const [order, setOrder] = useState('createdAt');
@@ -56,6 +57,10 @@ function App() {
     setSearch(e.target['search'].value);
   };
 
+  const handleSubmitSuccess = (food) => {
+    setItems((prevItems) => [food, ...prevItems]);
+  };
+
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
   useEffect(() => {
@@ -67,6 +72,7 @@ function App() {
 
   return (
     <div>
+      <FoodForm onSubmitSuccess={handleSubmitSuccess} />
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
       <form onSubmit={handleSearchSubmit}>
@@ -79,7 +85,7 @@ function App() {
           더보기
         </button>
       )}
-      {loadingError?.message && <p>{loadingError.message}</p>}
+      {loadingError && <p>{loadingError.message}</p>}
     </div>
   );
 }
