@@ -4,16 +4,19 @@ import './ReviewForm.css';
 import RatingInput from "./RatingInput";
 import { createReview } from "../api";
 
-function ReviewForm({ onSubmitSuccess }) {
-  // 리뷰 폼의 초기값을 설정
-  const INITIAL_STATE = {
-    title: '',
-    rating: 0,
-    content: '',
-    imgFile: null,
-  }
+// 리뷰 폼의 초기값을 설정
+const INITIAL_STATE = {
+  title: '',
+  rating: 0,
+  content: '',
+  imgFile: null,
+};
+
+// 부모로부터 initialPreview에 해당 id의 이미지 url을 받아옴
+function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmitSuccess, onCancel }) {
   // 인풋 데이터를 관리하는 스테이트
-  const [values, setValues] = useState(INITIAL_STATE);
+  // 부모컴포넌트에서 초기 수정값을 받아오기위해 initialState를 인자로 받음
+  const [values, setValues] = useState(initialState);
   // 리뷰를 제출중인지 여부를 관리하는 스테이트
   const [isSubmitting, setIsSubmitting] = useState(false);
   // 리뷰를 제출한 후의 결과를 관리하는 스테이트
@@ -76,11 +79,12 @@ function ReviewForm({ onSubmitSuccess }) {
 
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
-      <FileInput name="imgFile" value={values.imgFile} onChange={handleChange} />
+      <FileInput name="imgFile" value={values.imgFile} initialPreview={initialPreview} onChange={handleChange} />
       <input name="title" value={values.title} onChange={handleInputChange} />
       <RatingInput name="rating" value={values.rating} onChange={handleChange} />
       <textarea name="content" value={values.content} onChange={handleInputChange} />
       <button type="submit" disabled={isSubmitting}>확인</button>
+      {onCancel && <button onClick={onCancel}>취소</button>}
       {submitError && <div>{submitError.message}</div>}
     </form>
   )
