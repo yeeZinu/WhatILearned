@@ -2,7 +2,6 @@ import { useState } from "react";
 import FileInput from "./FileInput";
 import './ReviewForm.css';
 import RatingInput from "./RatingInput";
-import { createReview } from "../api";
 
 // 리뷰 폼의 초기값을 설정
 const INITIAL_STATE = {
@@ -13,7 +12,7 @@ const INITIAL_STATE = {
 };
 
 // 부모로부터 initialPreview에 해당 id의 이미지 url을 받아옴
-function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmitSuccess, onCancel }) {
+function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmit, onSubmitSuccess, onCancel }) {
   // 인풋 데이터를 관리하는 스테이트
   // 부모컴포넌트에서 초기 수정값을 받아오기위해 initialState를 인자로 받음
   const [values, setValues] = useState(initialState);
@@ -55,8 +54,8 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmitSucc
       setSubmitError(null);
       // 리뷰를 제출중인 상태로 변경
       setIsSubmitting(true);
-      // 리뷰를 생성하는 API 호출해 결과를 result에 저장
-      result = await createReview(formData);
+      // onSubmit 함수를 통해 api요청을 보내고 결과를 result에 저장
+      result = await onSubmit(formData);
     }
     catch (err) {
       // 에러가 발생했을 때 에러를 스테이트에 저장
@@ -72,6 +71,7 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmitSucc
     // 때문에 result 값을 구조분해하여 review에 저장
     const { review } = result;
     // 리뷰의 결과를 상위 컴포넌트에 전달
+    // 네트워크 요청이 성공적으로 완료되었을 때 실행됨
     onSubmitSuccess(review);
     // 리뷰 작성 후 폼 초기화
     setValues(INITIAL_STATE);
@@ -79,11 +79,33 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmitSucc
 
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
-      <FileInput name="imgFile" value={values.imgFile} initialPreview={initialPreview} onChange={handleChange} />
-      <input name="title" value={values.title} onChange={handleInputChange} />
-      <RatingInput name="rating" value={values.rating} onChange={handleChange} />
-      <textarea name="content" value={values.content} onChange={handleInputChange} />
-      <button type="submit" disabled={isSubmitting}>확인</button>
+      <FileInput
+        name="imgFile"
+        value={values.imgFile}
+        initialPreview={initialPreview}
+        onChange={handleChange}
+      />
+      <input
+        name="title"
+        value={values.title}
+        onChange={handleInputChange}
+      />
+      <RatingInput
+        name="rating"
+        value={values.rating}
+        onChange={handleChange}
+      />
+      <textarea
+        name="content"
+        value={values.content}
+        onChange={handleInputChange}
+      />
+      <button
+        type="submit"
+        disabled={isSubmitting}
+      >
+        확인
+      </button>
       {onCancel && <button onClick={onCancel}>취소</button>}
       {submitError && <div>{submitError.message}</div>}
     </form>

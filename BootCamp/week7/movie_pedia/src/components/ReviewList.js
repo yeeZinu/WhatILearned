@@ -32,7 +32,7 @@ function ReviewListItem({ item, onDelete, onEdit }) {
   );
 }
 
-function ReviewList({ items, onDelete }) {
+function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
   // 리뷰를 수정중인지 여부를 관리하는 스테이트
   const [editingId, setEditingId] = useState(null);
 
@@ -48,17 +48,36 @@ function ReviewList({ items, onDelete }) {
         if (item.id === editingId) {
           // 해당 아이디의 아이템을 구조분해하여 초기 상태로 전달
           // 이미지는 FileInput 컴포넌트에서 처리 하기 위해 따로 전달
-          const { imgUrl, title, rating, content } = item;
+          // 수정하는 정보의 id값 추가
+          const { id, imgUrl, title, rating, content } = item;
           const initialState = { title, rating, content };
+
+          const handleSubmit = (formData) => onUpdate(id, formData);
+
+          const handleUpdateSuccess = (review) => {
+            onUpdateSuccess(review);
+            setEditingId(null);
+          };
+
           return (
             <li key={item.id}>
-              <ReviewForm initialState={initialState} initialPreview={imgUrl} onCancel={handleCancel} />
+              <ReviewForm
+                initialState={initialState}
+                initialPreview={imgUrl}
+                onSubmit={handleSubmit}
+                onSubmitSuccess={handleUpdateSuccess}
+                onCancel={handleCancel}
+              />
             </li>
           );
         }
         return (
           <li key={item.id}>
-            <ReviewListItem item={item} onDelete={onDelete} onEdit={setEditingId} />
+            <ReviewListItem
+              item={item}
+              onDelete={onDelete}
+              onEdit={setEditingId}
+            />
           </li>
         );
       })}

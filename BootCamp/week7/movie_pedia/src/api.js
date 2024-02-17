@@ -19,10 +19,10 @@ export async function getReviews({
 
 export async function createReview(formData) {
   const response = await fetch(
-    `${BASE_URL}/film-reviews?`,{
-      method: 'POST',
-      body: formData,
-    }
+    `${BASE_URL}/film-reviews`, {
+    method: 'POST',
+    body: formData,
+  }
   );
   if (!response.ok) {
     throw new Error('리뷰를 생성하는데 실패했습니다');
@@ -30,3 +30,18 @@ export async function createReview(formData) {
   const body = await response.json();
   return body;
 }
+
+export async function updateReview(id, formData) {
+  const response = await fetch(
+    `${BASE_URL}/film-reviews/${id}`, {
+    method: 'PUT',
+    body: formData,
+  }
+  );
+  if (!response.ok) {
+    throw new Error('리뷰를 수정하는데 실패했습니다');
+  }
+  const body = await response.json();
+  return body;
+}
+
