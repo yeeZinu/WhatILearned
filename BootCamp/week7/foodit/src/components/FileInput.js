@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-function FileInput({ name, value, onChange }) {
-  const [preview, setPreview] = useState();
+function FileInput({ name, value, onChange, initialPreview }) {
+  const [preview, setPreview] = useState(initialPreview);
   const inputRef = useRef();
 
   const handleChange = (e) => {
@@ -38,11 +38,11 @@ function FileInput({ name, value, onChange }) {
     return () => {
       // 미리보기 이미지 초기화
       // 비어있으면 undefined로 초기화
-      setPreview();
+      setPreview(initialPreview);
       // 이미지파일이 화면에서 사라질 때 revokeObjectURL을 통해 메모리 해제
       URL.revokeObjectURL(nextPreview);
     };
-  }, [value]);
+  }, [value, initialPreview]);
 
   return (
     <div>
