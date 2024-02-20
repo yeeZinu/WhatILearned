@@ -3,7 +3,8 @@ import ReviewList from './ReviewList';
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
 import ReviewForm from './ReviewForm';
 import useAsync from '../hooks/useAsync';
-import LocalContext from '../contexts/LocaleContext';
+import { LocaleProvider } from '../contexts/LocaleContext';
+import LocaleSelect from './LocaleSelect';
 
 const LIMIT = 6;
 
@@ -79,8 +80,9 @@ function App() {
   // 이렇게 하면 하위 컴포넌트에서 해당 컨텍스트를 사용할 수 있음
   // value에 ko값을 넣어줌
   return (
-    <LocalContext.Provider value='ko'>
+    <LocaleProvider defaultValue={'ko'}>
       <div>
+        <LocaleSelect />
         <div>
           <button onClick={handleNewestClick}>최신순</button>
           <button onClick={handleBestClick}>베스트순</button>
@@ -98,7 +100,7 @@ function App() {
         {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
         {lodingError?.message && <span>{lodingError.message}</span>}
       </div>
-    </LocalContext.Provider>
+    </LocaleProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import FileInput from "./FileInput";
 import './ReviewForm.css';
 import RatingInput from "./RatingInput";
 import useAsync from "../hooks/useAsync";
+import useTranslate from "../hooks/useTranslate";
 
 // 리뷰 폼의 초기값을 설정
 const INITIAL_STATE = {
@@ -18,6 +19,10 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmit, on
   // 부모컴포넌트에서 초기 수정값을 받아오기위해 initialState를 인자로 받음
   const [values, setValues] = useState(initialState);
   const [isSubmitting, submitError, onSubmitAsync] = useAsync(onSubmit);
+
+  const t = useTranslate();
+
+
 
   // 인풋의 name과 value를 받아와서 컴포넌트에서 활용할 수 있게 하는 함수
   // 스프레드 연산자를 사용하여 객체에서 변경된 부분만 업데이트됨
@@ -87,9 +92,9 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmit, on
         type="submit"
         disabled={isSubmitting}
       >
-        확인
+        {t('confirm button')}
       </button>
-      {onCancel && <button onClick={onCancel}>취소</button>}
+      {onCancel && <button onClick={onCancel}>{t('cancel button')}</button>}
       {submitError && <div>{submitError.message}</div>}
     </form>
   )
