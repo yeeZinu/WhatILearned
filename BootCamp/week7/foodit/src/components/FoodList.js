@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import './FoodList.css';
-import FoodForm from './FoodForm';
 import useTranslate from '../hooks/useTranslate';
+import FoodForm from './FoodForm';
+import placeholderImg from '../assets/preview-placeholder.png';
+import './FoodList.css';
 
 function formatDate(value) {
   const date = new Date(value);
@@ -19,18 +20,40 @@ function FoodListItem({ item, onDelete, onEdit }) {
 
   return (
     <div className="FoodListItem">
-      <img src={imgUrl} alt={title} />
-      <div>{title}</div>
-      <div>{calorie}</div>
-      <div>{content}</div>
-      <div>{formatDate(createdAt)}</div>
-      <button onClick={handleDeleteClick}>{t('delete button')}</button>
-      <button onClick={handleEditClick}>{t('edit button')}</button>
+      <img
+        className="FoodListItem-preview"
+        src={imgUrl || placeholderImg}
+        alt={title}
+      />
+      <div className="FoodListItem-rows">
+        <div className="FoodListItem-title-calorie">
+          <h1 className="FoodListItem-title">{title}</h1>
+          <span className="FoodListItem-calorie">{calorie}kcal</span>
+        </div>
+        <p className="FoodListItem-content">{content}</p>
+        <div className="FoodListItem-date-buttons">
+          <p className="FoodListItem-date">{formatDate(createdAt)}</p>
+          <div className="FoodListItem-buttons">
+            <button
+              className="FoodListItem-edit-button"
+              onClick={handleEditClick}
+            >
+              {t('edit button')}
+            </button>
+            <button
+              className="FoodListItem-delete-button"
+              onClick={handleDeleteClick}
+            >
+              {t('delete button')}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-function FoodList({ items, onDelete, onUpdate, onUpdateSuccess }) {
+function FoodList({ className = '', items, onDelete, onUpdate, onUpdateSuccess }) {
   const [editingId, setEditingId] = useState(null);
 
   const handleCancel = () => {
@@ -38,27 +61,26 @@ function FoodList({ items, onDelete, onUpdate, onUpdateSuccess }) {
   };
 
   return (
-    <ul className="FoodList">
+    <ul className={`FoodList ${className}`}>
       {items.map((item) => {
-        // 수정 중인 아이템이라면
-        if (editingId === item.id) {
-          // 수정 폼에 들어갈 아이템 구조분해 할당
+        if (item.id === editingId) {
           const { id, imgUrl, title, calorie, content } = item;
-          const initialState = { title, calorie, content, imgUrl: null };
+          const initialValues = { title, calorie, content, imgFile: null };
 
           const handleSubmit = (formData) => onUpdate(id, formData);
 
-          const handleUpdateSuccess = (food) => {
-            onUpdateSuccess(food);
+          const handleSubmitSuccess = (newItem) => {
+            onUpdateSuccess(newItem);
             setEditingId(null);
           };
+
           return (
             <li key={item.id}>
               <FoodForm
-                initialState={initialState}
+                initialValues={initialValues}
                 initialPreview={imgUrl}
                 onSubmit={handleSubmit}
-                onSubmitSuccess={handleUpdateSuccess}
+                onSubmitSuccess={handleSubmitSuccess}
                 onCancel={handleCancel}
               />
             </li>
@@ -68,8 +90,8 @@ function FoodList({ items, onDelete, onUpdate, onUpdateSuccess }) {
           <li key={item.id}>
             <FoodListItem
               item={item}
-              onDelete={onDelete}
               onEdit={setEditingId}
+              onDelete={onDelete}
             />
           </li>
         );
