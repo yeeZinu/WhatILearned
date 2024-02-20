@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReviewList from './ReviewList';
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
 import ReviewForm from './ReviewForm';
+import useAsync from '../hooks/useAsync';
+import LocalContext from '../contexts/LocaleContext';
 
 const LIMIT = 6;
 
@@ -10,8 +12,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [offset, setOffset] = useState(0);
   const [hasNext, setHasNext] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [lodingError, setLoadingError] = useState(null);
+  const [isLoading, lodingError, getReviewAsync] = useAsync(getReviews);
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
@@ -26,20 +27,9 @@ function App() {
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  const handleLoad = async (options) => {
-    let result;
-    try {
-      setIsLoading(true);
-      setLoadingError(null);
-      result = await getReviews(options);
-    }
-    catch (error) {
-      setLoadingError(error);
-      return;
-    }
-    finally {
-      setIsLoading(false);
-    }
+  const handleLoad = useCallback(async (options) => {
+    const result = await getReviewAsync(options);
+    if (!result) return;
 
     const { reviews, paging } = result;
     if (options.offset === 0) {
@@ -49,7 +39,7 @@ function App() {
     }
     setOffset(options.offset + LIMIT);
     setHasNext(paging.hasNext);
-  };
+  }, [getReviewAsync]);
 
   const handleLoadMore = async () => {
     await handleLoad({ order, offset, limit: LIMIT });
@@ -83,27 +73,32 @@ function App() {
 
   useEffect(() => {
     handleLoad({ order, offset: 0, limit: LIMIT });
-  }, [order]);
+  }, [order, handleLoad]);
 
+  // 생성한 LocalContext.Provider를 사용하여 할당할 범위를 지정
+  // 이렇게 하면 하위 컴포넌트에서 해당 컨텍스트를 사용할 수 있음
+  // value에 ko값을 넣어줌
   return (
-    <div>
+    <LocalContext.Provider value='ko'>
       <div>
-        <button onClick={handleNewestClick}>최신순</button>
-        <button onClick={handleBestClick}>베스트순</button>
+        <div>
+          <button onClick={handleNewestClick}>최신순</button>
+          <button onClick={handleBestClick}>베스트순</button>
+        </div>
+        <ReviewForm
+          onSubmit={createReview}
+          onSubmitSuccess={handleCreateSuccess}
+        />
+        <ReviewList
+          items={sortedItems}
+          onDelete={handleDelete}
+          onUpdate={updateReview}
+          onUpdateSuccess={handleUpdateSuccess}
+        />
+        {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
+        {lodingError?.message && <span>{lodingError.message}</span>}
       </div>
-      <ReviewForm
-        onSubmit={createReview}
-        onSubmitSuccess={handleCreateSuccess}
-      />
-      <ReviewList
-        items={sortedItems}
-        onDelete={handleDelete}
-        onUpdate={updateReview}
-        onUpdateSuccess={handleUpdateSuccess}
-      />
-      {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
-      {lodingError?.message && <span>{lodingError.message}</span>}
-    </div>
+    </LocalContext.Provider>
   );
 }
 
