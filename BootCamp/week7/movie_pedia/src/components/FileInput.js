@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
+import placeholderImg from '../assets/preview-placeholder.png';
+import resetImg from '../assets/ic-reset.png';
+import './FileInput.css';
 
-function FileInput({ name, value, initialPreview, onChange }) {
+function FileInput({ className = '', name, value, initialPreview, onChange }) {
   // 부모 컴포넌트로부터 받아온 initialPreview === imgUrl
   const inputRef = useRef();
   // 미리보기이미지 상태에 initialPreview를 초기값으로 설정
@@ -39,10 +42,24 @@ function FileInput({ name, value, initialPreview, onChange }) {
   }, [value, initialPreview]);
 
   return (
-    <div>
-      <img src={preview} alt="미리보기 이미지" />
-      <input type="file" onChange={handleChange} ref={inputRef} />
-      {value && <button onClick={handleClearClick}>X</button>}
+    <div className={`FileInput ${className}`}>
+      <img
+        className={`FileInput-preview ${preview ? 'selected' : ''}`}
+        src={preview || placeholderImg}
+        alt="이미지 미리보기"
+      />
+      <input
+        className="FileInput-hidden-overlay"
+        type="file"
+        accept="image/png, image/jpeg"
+        onChange={handleChange}
+        ref={inputRef}
+      />
+      {value && (
+        <button className="FileInput-clear-button" onClick={handleClearClick}>
+          <img src={resetImg} alt="선택해제" />
+        </button>
+      )}
     </div>
   );
 }

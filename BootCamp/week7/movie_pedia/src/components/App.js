@@ -1,20 +1,35 @@
 import { useCallback, useEffect, useState } from 'react';
-import ReviewList from './ReviewList';
 import { createReview, deleteReview, getReviews, updateReview } from '../api';
+import ReviewList from './ReviewList';
 import ReviewForm from './ReviewForm';
-import useAsync from '../hooks/useAsync';
-import { LocaleProvider } from '../contexts/LocaleContext';
 import LocaleSelect from './LocaleSelect';
+import useAsync from '../hooks/useAsync';
+import useTranslate from '../hooks/useTranslate';
+import './App.css';
+import logoImg from '../assets/logo.png';
+import ticketImg from '../assets/ticket.png';
 
 const LIMIT = 6;
 
+function AppSortButton({ selected, children, onClick }) {
+  return (
+    <button
+      disabled={selected}
+      className={`AppSortButton ${selected ? 'selected' : ''}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
 function App() {
+  const t = useTranslate();
   const [order, setOrder] = useState('createdAt');
-  const [items, setItems] = useState([]);
   const [offset, setOffset] = useState(0);
   const [hasNext, setHasNext] = useState(false);
-  const [isLoading, lodingError, getReviewAsync] = useAsync(getReviews);
-
+  const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
+  const [items, setItems] = useState([]);
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
   const handleNewestClick = () => setOrder('createdAt');
@@ -29,7 +44,7 @@ function App() {
   };
 
   const handleLoad = useCallback(async (options) => {
-    const result = await getReviewAsync(options);
+    const result = await getReviewsAsync(options);
     if (!result) return;
 
     const { reviews, paging } = result;
@@ -40,7 +55,7 @@ function App() {
     }
     setOffset(options.offset + LIMIT);
     setHasNext(paging.hasNext);
-  }, [getReviewAsync]);
+  }, [getReviewsAsync]);
 
   const handleLoadMore = async () => {
     await handleLoad({ order, offset, limit: LIMIT });
@@ -80,27 +95,66 @@ function App() {
   // 이렇게 하면 하위 컴포넌트에서 해당 컨텍스트를 사용할 수 있음
   // value에 ko값을 넣어줌
   return (
-    <LocaleProvider defaultValue={'ko'}>
-      <div>
-        <LocaleSelect />
-        <div>
-          <button onClick={handleNewestClick}>최신순</button>
-          <button onClick={handleBestClick}>베스트순</button>
+    <div className="App">
+      <nav className="App-nav">
+        <div className="App-nav-container">
+          <img className="App-logo" src={logoImg} alt="MOVIDE PEDIA" />
+          <LocaleSelect />
         </div>
-        <ReviewForm
-          onSubmit={createReview}
-          onSubmitSuccess={handleCreateSuccess}
-        />
-        <ReviewList
-          items={sortedItems}
-          onDelete={handleDelete}
-          onUpdate={updateReview}
-          onUpdateSuccess={handleUpdateSuccess}
-        />
-        {hasNext && <button disabled={isLoading} onClick={handleLoadMore}>더보기</button>}
-        {lodingError?.message && <span>{lodingError.message}</span>}
+      </nav>
+      <div className="App-container">
+        <div
+          className="App-ReviewForm"
+          style={{
+            backgroundImage: `url("${ticketImg}")`,
+          }}
+        >
+          <ReviewForm
+            onSubmit={createReview}
+            onSubmitSuccess={handleCreateSuccess}
+          />
+        </div>
+        <div className="App-sorts">
+          <AppSortButton
+            selected={order === 'createdAt'}
+            onClick={handleNewestClick}
+          >
+            {t('newest')}
+          </AppSortButton>
+          <AppSortButton
+            selected={order === 'rating'}
+            onClick={handleBestClick}
+          >
+            {t('best')}
+          </AppSortButton>
+        </div>
+        <div className="App-ReviewList">
+          <ReviewList
+            items={sortedItems}
+            onDelete={handleDelete}
+            onUpdate={updateReview}
+            onUpdateSuccess={handleUpdateSuccess}
+          />
+          {hasNext ? (
+            <button
+              className="App-load-more-button"
+              disabled={isLoading}
+              onClick={handleLoadMore}
+            >
+              {t('load more')}
+            </button>
+          ) : (
+            <div className="App-load-more-button" />
+          )}
+          {loadingError?.message && <span>{loadingError.message}</span>}
+        </div>
       </div>
-    </LocaleProvider>
+      <footer className="App-footer">
+        <div className="App-footer-container">
+          {t('terms of service')} | {t('privacy policy')}
+        </div>
+      </footer>
+    </div>
   );
 }
 

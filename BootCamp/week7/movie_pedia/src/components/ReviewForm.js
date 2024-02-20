@@ -1,9 +1,10 @@
-import { useState } from "react";
-import FileInput from "./FileInput";
+import { useState } from 'react';
+import useAsync from '../hooks/useAsync';
+import useTranslate from '../hooks/useTranslate';
+import FileInput from './FileInput';
+import RatingInput from './RatingInput';
 import './ReviewForm.css';
-import RatingInput from "./RatingInput";
-import useAsync from "../hooks/useAsync";
-import useTranslate from "../hooks/useTranslate";
+
 
 // 리뷰 폼의 초기값을 설정
 const INITIAL_STATE = {
@@ -14,12 +15,18 @@ const INITIAL_STATE = {
 };
 
 // 부모로부터 initialPreview에 해당 id의 이미지 url을 받아옴
-function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmit, onSubmitSuccess, onCancel }) {
+function ReviewForm({
+  className = '',
+  initialState = INITIAL_STATE,
+  initialPreview,
+  onSubmit,
+  onSubmitSuccess,
+  onCancel
+}) {
   // 인풋 데이터를 관리하는 스테이트
   // 부모컴포넌트에서 초기 수정값을 받아오기위해 initialState를 인자로 받음
   const [values, setValues] = useState(initialState);
-  const [isSubmitting, submitError, onSubmitAsync] = useAsync(onSubmit);
-
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
   const t = useTranslate();
 
 
@@ -66,36 +73,57 @@ function ReviewForm({ initialState = INITIAL_STATE, initialPreview, onSubmit, on
   };
 
   return (
-    <form className="ReviewForm" onSubmit={handleSubmit}>
+    <form className={`ReviewForm ${className}`} onSubmit={handleSubmit}>
       <FileInput
+        className="ReviewForm-preview"
         name="imgFile"
         value={values.imgFile}
         initialPreview={initialPreview}
         onChange={handleChange}
       />
-      <input
-        name="title"
-        value={values.title}
-        onChange={handleInputChange}
-      />
-      <RatingInput
-        name="rating"
-        value={values.rating}
-        onChange={handleChange}
-      />
-      <textarea
-        name="content"
-        value={values.content}
-        onChange={handleInputChange}
-      />
-      <button
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {t('confirm button')}
-      </button>
-      {onCancel && <button onClick={onCancel}>{t('cancel button')}</button>}
-      {submitError && <div>{submitError.message}</div>}
+      <div className="ReviewForm-rows">
+        <div className="ReviewForm-title-rating">
+          <input
+            className="ReviewForm-title"
+            name="title"
+            value={values.title}
+            placeholder={t('title placeholder')}
+            onChange={handleInputChange}
+          />
+          <RatingInput
+            className="ReviewForm-rating"
+            name="rating"
+            value={values.rating}
+            onChange={handleChange}
+          />
+        </div>
+        <textarea
+          className="ReviewForm-content"
+          name="content"
+          value={values.content}
+          placeholder={t('content placeholder')}
+          onChange={handleInputChange}
+        />
+        <div className="ReviewForm-error-buttons">
+          <div className="ReviewForm-error">
+            {submittingError && <div>{submittingError.message}</div>}
+          </div>
+          <div className="ReviewForm-buttons">
+            {onCancel && (
+              <button className="ReviewForm-cancel-button" onClick={onCancel}>
+                {t('cancel button')}
+              </button>
+            )}
+            <button
+              className="ReviewForm-submit-button"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {t('confirm button')}
+            </button>
+          </div>
+        </div>
+      </div>
     </form>
   )
 }

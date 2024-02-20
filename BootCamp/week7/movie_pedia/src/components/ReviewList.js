@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import Rating from './Rating';
-import './ReviewList.css';
-import ReviewForm from './ReviewForm';
 import useTranslate from '../hooks/useTranslate';
+import Rating from './Rating';
+import ReviewForm from './ReviewForm';
+import './ReviewList.css';
 
 function formatDate(value) {
   const date = new Date(value);
@@ -21,15 +21,27 @@ function ReviewListItem({ item, onDelete, onEdit }) {
   };
 
   return (
-    <div className="ReviewListItem">
+    <div className="ReviewListItem" key={item.id}>
       <img className="ReviewListItem-img" src={item.imgUrl} alt={item.title} />
-      <div>
-        <h1>{item.title}</h1>
-        <Rating value={item.rating} />
-        <p>{formatDate(item.createdAt)}</p>
-        <p>{item.content}</p>
-        <button onClick={handleDeleteClick}>{t('delete button')}</button>
-        <button onClick={handleEditClick}>{t('edit button')}</button>
+      <div className="ReviewListItem-rows">
+        <h1 className="ReviewListItem-title">{item.title}</h1>
+        <Rating className="ReviewListItem-rating" value={item.rating} />
+        <p className="ReviewListItem-date">{formatDate(item.createdAt)}</p>
+        <p className="ReviewListItem-content">{item.content}</p>
+        <div className="ReviewListItem-buttons">
+          <button
+            className="ReviewListItem-edit-button"
+            onClick={handleEditClick}
+          >
+            {t('edit button')}
+          </button>
+          <button
+            className="ReviewListItem-delete-button"
+            onClick={handleDeleteClick}
+          >
+            {t('delete button')}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -44,7 +56,7 @@ function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
   };
 
   return (
-    <ul>
+    <ul className="ReviewList">
       {items.map((item) => {
         // 만약 아이템의 id가 수정중인 아이템의 id와 같다면
         //  리뷰 수정 폼을 렌더링 
@@ -53,7 +65,7 @@ function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
           // 이미지는 FileInput 컴포넌트에서 처리 하기 위해 따로 전달
           // 수정하는 정보의 id값 추가
           const { id, imgUrl, title, rating, content } = item;
-          const initialState = { title, rating, content };
+          const initialState = { title, rating, content, imgFile: null };
 
           const handleSubmit = (formData) => onUpdate(id, formData);
 
