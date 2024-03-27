@@ -7,22 +7,9 @@ import Image from 'next/image';
 import Head from 'next/head';
 import Spinner from '@/components/Spinner';
 
-export async function getStaticPaths() {
-  const res = await axios.get(`/movies`);
-  const movies = res.data.results;
-  const paths = movies.map((movie) => ({
-    params: { id: String(movie.id) },
-  }));
-
-  return {
-    paths,
-    fallback: true,
-  }
-}
-
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const movieId = context.params.id;
-  
+
   let movie;
   try {
     const res = await axios.get(`/movies/${movieId}/`);
@@ -33,9 +20,13 @@ export async function getStaticProps(context) {
     };
   }
 
+  const res = await axios.get(`/movie_reviews/?movie_id=${movieId}`);
+  const movieReviews = res.data.results ?? [];
+
   return {
     props: {
       movie,
+      movieReviews,
     },
   };
 }
@@ -49,22 +40,7 @@ const labels = {
   },
 };
 
-export default function Movie({ movie }) {
-  const [movieReviews, setMovieReviews] = useState([]);
-  const router = useRouter();
-  const id = router.query['id'];
-
-  async function loadMovieReviews(targetId) {
-    const res = await axios.get(`/movie_reviews/?movie_id=${targetId}`);
-    const nextMovieReviews = res.data.results ?? [];
-    setMovieReviews(nextMovieReviews);
-  }
-
-  useEffect(() => {
-    if (id) {
-      loadMovieReviews(id);
-    }
-  }, [id]);
+export default function Movie({ movie, movieReviews }) {
 
   if (!movie) return (
     <div className={styles.loading}>

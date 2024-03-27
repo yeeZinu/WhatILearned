@@ -1,25 +1,24 @@
-import { useRouter } from 'next/router';
 import MovieList from '@/components/MovieList';
 import SearchForm from '@/components/SearchForm';
 import styles from '@/styles/Search.module.css';
 import axios from '@/lib/axios';
-import { useEffect, useState } from 'react';
 import Head from 'next/head';
 
-export default function Search() {
-  const [movies, setMovies] = useState([]);
-  const router = useRouter();
-  const q = router.query['q'];
+export async function getServerSideProps(context) {
+  const q = context.query['q'];
 
-  async function getMovies(query) {
-    const res = await axios.get(`/movies/?q=${query}`);
-    const movies = res.data.results ?? [];
-    setMovies(movies);
-  }
+  const res = await axios.get(`/movies/?q=${q}`);
+  const movies = res.data.results ?? [];
 
-  useEffect(() => {
-    getMovies(q);
-  }, [q]);
+  return {
+    props: {
+      q,
+      movies,
+    },
+  };
+}
+
+export default function Search({ q, movies }) {
 
   return (
     <>
