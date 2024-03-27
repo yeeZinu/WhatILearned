@@ -5,6 +5,40 @@ import axios from '@/lib/axios';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
+import Spinner from '@/components/Spinner';
+
+export async function getStaticPaths() {
+  const res = await axios.get(`/movies`);
+  const movies = res.data.results;
+  const paths = movies.map((movie) => ({
+    params: { id: String(movie.id) },
+  }));
+
+  return {
+    paths,
+    fallback: true,
+  }
+}
+
+export async function getStaticProps(context) {
+  const movieId = context.params.id;
+  
+  let movie;
+  try {
+    const res = await axios.get(`/movies/${movieId}/`);
+    movie = res.data;
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      movie,
+    },
+  };
+}
 
 const labels = {
   rating: {
@@ -15,17 +49,10 @@ const labels = {
   },
 };
 
-export default function Movie() {
-  const [movie, setMovie] = useState();
+export default function Movie({ movie }) {
   const [movieReviews, setMovieReviews] = useState([]);
   const router = useRouter();
   const id = router.query['id'];
-
-  async function loadMovies(targetId) {
-    const res = await axios.get(`/movies/${targetId}/`);
-    const nextMovie = res.data;
-    setMovie(nextMovie);
-  }
 
   async function loadMovieReviews(targetId) {
     const res = await axios.get(`/movie_reviews/?movie_id=${targetId}`);
@@ -35,12 +62,16 @@ export default function Movie() {
 
   useEffect(() => {
     if (id) {
-      loadMovies(id);
       loadMovieReviews(id);
     }
   }, [id]);
 
-  if (!movie) return null;
+  if (!movie) return (
+    <div className={styles.loading}>
+      <Spinner />
+      <p>로딩중 입니다. 잠시만 기다려주세요.</p>
+    </div>
+  );
 
 
   return (
