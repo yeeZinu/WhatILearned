@@ -8,3 +8,9 @@ for (let idx = 1; idx <= 10; idx++) {
     break;
   }
 }
+
+let idx = 0;
+while (idx < 10) {
+  console.log(idx);
+  idx++;
+}
