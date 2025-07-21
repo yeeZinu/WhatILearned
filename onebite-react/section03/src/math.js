@@ -1,12 +1,19 @@
-function add(a, b) {
+export function add(a, b) {
   return a + b;
 }
 
-function sub(a, b) {
+export function sub(a, b) {
   return a - b;
 }
 
-module.exports = {
-  add: add,
-  sub, // sub : sub와 동일일
-};
+export default function multiply(a, b) {
+  return a * b;
+}
+
+// export {add, sub};
+
+// CJS
+// module.exports = {
+//   add: add,
+//   sub, // sub : sub와 동일일
+// };
